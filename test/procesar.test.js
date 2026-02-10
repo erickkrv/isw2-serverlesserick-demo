@@ -20,7 +20,7 @@ test("procesar convierte el nombre a mayúsculas", () => {
 
   handler(req, res);
 
-  assert.equal(res.statusCode, 200);Ñ
+  assert.equal(res.statusCode, 200);
   assert.deepEqual(res.body, { resultado: "Nombre procesado: JUAN" ,
     longitud: 4
   });
@@ -47,4 +47,27 @@ test("procesar maneja nombre ausente", () => {
 
   assert.equal(res.statusCode, 200);
   assert.ok(res.body.resultado.includes("ANÓNIMO"));
+});
+
+test("formato consistente en la respuesta", () => {
+  const req = { query: { nombre: "maria" } };
+  
+  const res = {
+    statusCode: null,
+    body: null,
+    status(code) {
+      this.statusCode = code;
+      return this;
+    },
+    json(payload) {
+      this.body = payload;
+      return this;
+    }
+  };
+  
+  handler(req, res);
+
+  assert.equal(res.statusCode, 200);
+  assert.ok(res.body.resultado.startsWith("Nombre procesado:"));
+  assert.ok(typeof res.body.longitud === "number");
 });
